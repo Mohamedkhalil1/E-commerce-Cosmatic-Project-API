@@ -1,0 +1,35 @@
+<?php
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| contains the "web" middleware group. Now create something great!
+|
+*/
+
+use App\Exports\OrdersExport;
+use App\Exports\OrdersViewExport;
+use App\Exports\UsersExport;
+use Maatwebsite\Excel\Facades\Excel;
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+Auth::routes();
+
+Route::get('/download',function(){
+    return Excel::download(new OrdersExport,'orders.xlsx');
+});
+
+Route::get('/download/orders',function(){
+    return Excel::download(new OrdersViewExport,'orderView.xlsx');
+});
+
+Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('/create_tables','createTablesController@create_table');
