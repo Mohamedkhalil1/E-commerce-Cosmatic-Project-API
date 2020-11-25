@@ -33,7 +33,7 @@ class UserFavoruiteProduct extends ApiController
                 return $this->showAll($favoruites,ProductTransformer::class);
             }
         }catch (Exception $ex){
-            return $this->getMessage($ex,404);
+            return $this->getMessage(__('products.favoruite_error'),404);
         }
     }
 
@@ -45,10 +45,15 @@ class UserFavoruiteProduct extends ApiController
      */
     public function store(Request $request)
     {
-        $user= auth()->user();
-        Product::findOrFail($request->product_id);
-        $user->favourites()->syncWithoutDetaching($request->product_id);
-        return $this->getMessage('product has been in your favoruite list.',200);
+        try{
+            $user= auth()->user();
+            Product::findOrFail($request->product_id);
+            $user->favourites()->syncWithoutDetaching($request->product_id);
+            return $this->getMessage(__('products.favoruite_added'),200);
+        }catch(Exception $ex){
+            return $this->getMessage(__('products.favoruite_error'),404); 
+        }
+       
     }
 
 
@@ -60,15 +65,24 @@ class UserFavoruiteProduct extends ApiController
      */
     public function destroy($id)
     {
-        $user= auth()->user();
-        $product = Product::findOrFail($id);
-        $user->favourites()->detach($id);
-        return $this->getMessage("{$product->name} has been removed from favoruite list.");
+        try{
+            $user= auth()->user();
+            $product = Product::findOrFail($id);
+            $user->favourites()->detach($id);
+            return $this->getMessage(__('products.favoruite_removed'),200);
+        }catch(Exception $ex){
+            return $this->getMessage(__('products.favoruite_error'),404); 
+        }
+       
+     
     }
 
     public function clear_favourite(){
-        $user = auth()->user();
-        $user->favourites()->detach();
-        return $this->getMessage('Favoruite has been cleared',200);
+        try{
+            auth()->user()->favourites()->detach();
+            return $this->getMessage(__('products.favourite_clear'),200);
+        }catch(Exception $ex){
+            return $this->getMessage(__('products.favoruite_error'),404); 
+        }
     }
 }
