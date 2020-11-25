@@ -11,11 +11,6 @@ use Illuminate\Support\Facades\Mail;
 class UserForgetPasswordController extends ApiController
 {
     
-      /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function send_email(Request $request)
     {
         
@@ -34,12 +29,6 @@ class UserForgetPasswordController extends ApiController
         return $this->getMessage('Your Code has been send to email' ,200);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function match_code(Request $request)
     {
         $request->validate([
@@ -57,12 +46,6 @@ class UserForgetPasswordController extends ApiController
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function new_password(Request $request)
     {
       
@@ -81,13 +64,6 @@ class UserForgetPasswordController extends ApiController
         return $this->getMessage('your password has been changed',200);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function resend_email(Request $request)
     {
         $request->validate([

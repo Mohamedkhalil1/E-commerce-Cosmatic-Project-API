@@ -21,14 +21,12 @@ class Ar_DevisionTransformer extends TransformerAbstract
     {
         return [
             'id'                => (int)$devision->id,
-            'title'             => (string)$devision->title,
+            'title'             => (string)$devision->title_ar,
         ];
     }
 
     public function includeBrands(Deivison $devision){
-        
         $brands = $devision->brands()->get();
-        
         return $this->collection($brands,new Ar_BrandTransformer);
     }
 }

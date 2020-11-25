@@ -14,7 +14,7 @@ class User extends Authenticatable implements JWTSubject
 
     public $transformer = UserTransformer::class;
 
-    protected $fillable = ['name', 'email', 'password','phone' ,'remember_token' ,'avatar'];
+    protected $guarded = [];
 
 
     public function orders(){

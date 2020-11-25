@@ -18,46 +18,57 @@ class UserCardController extends ApiController
         $this->middleware('auth:api');
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    
     public function index(Request $request)
     {
-        $user = auth()->user();
-        $cart = $user->card;
-       
-        if($cart === null){
-            $cart = new Card();
-            $cart->user_id = $user->id;
-            $cart->save();
-        }
-        $cart->changed = 0;
-        $cart->save();
+        try{
+            DB::beginTransaction();
 
-        $cart = auth()->user()->card;
-        $products = $cart->products()->get();
-        foreach($products as $product){  
-            $card_product = CardOfProduct::where('card_id',$cart->id)->where('product_id',$product->id)->first();
-            if($product->stock < $card_product->quantity){
-                $cart->changed = 1;
+            #get cart
+            $user = auth()->user();
+            $cart = $user->card;
+            
+            #if user has not cart , create cart
+            if($cart === null){
+                $cart = new Card();
+                $cart->user_id = $user->id;
                 $cart->save();
-                if($product->stock < 0){
-                    $card_product->quantity = 0;
-                    $cart->products()->detach($product->id);
-                    
-                }else{
-                    $card_product->quantity=$product->stock;
-                }
-                $card_product->save();
             }
-        }
 
-        if($request->language==='ar'){
-            return $this->showOne($cart,Ar_CardTransformer::class);
-        }else{
-            return $this->showOne($cart);
+            #start cart with zero changes
+            $cart->changed = 0;
+            $cart->save();
+    
+            #get products from carts if any
+            $products = $cart->products()->get();
+
+            #loop into products
+            foreach($products as $product){  
+                $card_product = CardOfProduct::where('card_id',$cart->id)->where('product_id',$product->id)->first();
+                #cart is changed cuz change of quantity of product into cart
+                if($product->stock < $card_product->quantity){
+                    $cart->changed = 1;
+                    $cart->save();
+                    if($product->stock < 0){
+                        $card_product->quantity = 0;
+                        $cart->products()->detach($product->id);
+                        
+                    }else{
+                        $card_product->quantity=$product->stock;
+                    }
+                    $card_product->save();
+                }
+            }
+    
+            DB::commit();
+            if($request->language==='ar'){
+                return $this->showOne($cart,Ar_CardTransformer::class);
+            }else{
+                return $this->showOne($cart);
+            }
+        }catch(\Exception $ex){
+            DB::rollback();
+            return $this->getMessage(__('carts.error'));
         }
        
     }

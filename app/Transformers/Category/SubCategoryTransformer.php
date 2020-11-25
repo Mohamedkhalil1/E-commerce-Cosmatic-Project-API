@@ -13,8 +13,7 @@ class SubCategoryTransformer extends GeneralTransformer
         return [
             'id'                => (int)$category->id,
             'title'             => (string)$category->title,
-            'image'             => (string)$this->end_point.$category->image,
-            'phone_image'       => (string)$this->end_point.$category->phone_image,
+            'image'             => (string)$this->end_point.$category->image
         ];
     }
 }

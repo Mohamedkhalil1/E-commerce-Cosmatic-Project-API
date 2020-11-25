@@ -21,9 +21,7 @@ class AdTransformer extends GeneralTransformer
         return [
             'id'                => (int)$ad->id,
             'title'             => (string)$ad->title,
-            'body'              => (string)$ad->body,
             'image'             => $ad->image === null ? '' : (string)$this->end_point.$ad->image,
-            'phone_image'       => $ad->phone_image !== null ? (string)$this->end_point.$ad->phone_image : null
         ];
     }
 

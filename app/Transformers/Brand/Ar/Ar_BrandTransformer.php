@@ -4,6 +4,7 @@ namespace App\Transformers\Brand\Ar;
 
 use App\Brand;
 use App\Transformers\Category\Ar\Ar_CategoryTransformer;
+use App\Transformers\Category\Ar\Ar_SubCategoryTransformer;
 use League\Fractal\TransformerAbstract;
 
 class Ar_BrandTransformer extends TransformerAbstract
@@ -27,7 +28,7 @@ class Ar_BrandTransformer extends TransformerAbstract
     }
 
     public function includeCategories(Brand $brand){
-        $categories = $brand->categories()->get();
-        return $this->collection($categories,new Ar_CategoryTransformer);
+        $categories = $brand->categories()->whereNotNull('parent_id')->get();
+        return $this->collection($categories,new Ar_SubCategoryTransformer);
     }
 }
