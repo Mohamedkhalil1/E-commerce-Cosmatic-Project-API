@@ -16,32 +16,16 @@ class Ar_OrderDetailsTransformer extends GeneralTransformer
      */
     public function transform(OrderDetails $order_details)
     {
-        $user= auth()->user();
         $product = Product::find($order_details->product_id);
-        if($product !== null){
-            $is_favoruite= $this->is_favoruite($product,$user);  
-        }
-        else{
-            $is_favoruite=false;
-        }
-
         return [
             'id'               => (int) $order_details->id,
             'order_id'         => (int) $order_details->order_id,
-            'product_id'       => Product::find($order_details->product_id) ? (int) Product::find($order_details->product_id)->id : '' ,
-            'product_title'    => Product::find($order_details->product_id) ? (string)Product::find($order_details->product_id)->title_ar : '' ,
-            'product_image'    => Product::find($order_details->product_id) ? $this->end_point.(string)Product::find($order_details->product_id)->image : '' ,
-            'brand'            => Product::find($order_details->product_id) ? (string)Product::find($order_details->product_id)->brand ?  (string) Product::find($order_details->product_id)->brand->title : '' : '',
+            'product_id'       => $product->id ,
+            'product_title'    => $product->title_ar,
+            'product_image'    => $product->phone_image ,
             'price'            => $order_details->price,
             'price_discount'   => $order_details->price_discount,
-            'quantity'         => (int) $order_details->quantity,
-            'is_favoruite'     => (bool)$is_favoruite,
-            'shipping_fees'    => (int) $order_details->shipping_fees,
-            'discount'         => (double) $order_details->discond,
+            'quantity'         => (int) $order_details->quantity
         ];
-    }
-
-    private function is_favoruite($product , $user){
-        return $user->favourites()->find($product->id) ? true : false;
     }
 }

@@ -104,25 +104,20 @@ class AuthController extends ApiController
     protected function respondWithToken($token)
     {
         $user = auth()->user();
-       
-        if($user->userAddress !== null){
-            $shipping_address = $this->transformData($user->userAddress,UserAddressTransfor::class);
-        }else{
-            $shipping_address = null;
-        }
+
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => auth()->factory()->getTTL() * 60,   
-            'id'   => $user->id,
-            'name' => $user->name,
-            'email' => $user->email,
-            'admin' =>(int)$user->admin,
-            'avatar' => $user->avatar ? $user->avatar : '' ,
+            'id' => (int) $user->id,
+            'name' => (string) $user->name,
+            'email' => (string) $user->email,
+            'phone' =>  $user->phone,
+            'government' => (string) $user->government,
+            'city' => (string) $user->city,
+            'address' => (string) $user->address,
+            'avatar' => (string)$user->avatar,
             'notification' => (int) $user->notification,
-            'is_shipping' => (bool)$user->is_shipping,
-            'shipping_address' => $shipping_address,
-            'phone'        =>  $user->phone
         ]);      
     }
 
@@ -135,14 +130,14 @@ class AuthController extends ApiController
             "password"     => "required|confirmed",
             "address"      => "required",
             "city"         => "required",
-            "district"     => "required"
+            "government"   => "required"
         ];
 
         $validator = Validator::make($request->all(),$rules);
         if ($validator->fails()) {
             return $this->returnValidationError($validator);
         }
-        $user = $this->add_user($request->name,$request->email,$request->password,$request->phone,$request->address,$request->city,$request->district);
+        $user = $this->add_user($request->name,$request->email,$request->password,$request->phone,$request->address,$request->city,$request->government);
         if($user){
             $credentials = request(['email', 'password']);
             if (!$token = auth()->attempt($credentials)) {
@@ -150,7 +145,7 @@ class AuthController extends ApiController
             }
             
             return $this->respondWithToken($token , '');
-            return $this->getMessage("{$user->name} has been added successfully",200);
+           
         }
         return $this->getMessage('something goes wrong , try again',404);
     }
@@ -187,7 +182,7 @@ class AuthController extends ApiController
     public function socialLogin(Request $request){
 
         $rules = [
-            "email"        => "required|email|exists:users,email",
+            "email"  => "required|email|exists:users,email",
         ];
 
         $validator = Validator::make($request->all(),$rules);
@@ -216,7 +211,7 @@ class AuthController extends ApiController
         return $this->respondWithToken($token , $api_token);
     }
 
-    protected function add_user($name,$email,$password,$phone,$user_address,$city,$district){
+    protected function add_user($name,$email,$password,$phone,$user_address,$city,$government){
         try{
             DB::beginTransaction();
             $user= New User();
@@ -224,21 +219,14 @@ class AuthController extends ApiController
             $user->email = $email;
             $user->password=$password;
             $user->phone = $phone;
+            $user->address = $user_address;
+            $user->city = $city;
+            $user->government = $government;
             $user->save();
-            
-            $address = new UserAddress();
-            $address->user_id = $user->id;
-           
-            $address->address = $user_address;
-            $address->city = $city;
-            $address->region = $district;
-            $address->save();
             DB::commit();
             return $user;
         }catch(Exception $ex){
-           
             DB::rollback();
-            dd($ex);
             return false;
         }
        

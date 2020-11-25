@@ -21,13 +21,9 @@ class OrderTransformer extends GeneralTransformer
     public function transform(Order $order)
     {
         if((int)$order->done === 0){
-            $status = "processing";
-        }elseif((int)$order->done === 1){
-            $status = "done";
-        }elseif((int)$order->done === 2){
-            $status = "rejected";
-        }else{
             $status = "pending";
+        }elseif((int)$order->done === 1){
+            $status = "paid";
         }
         return [
             'id'          => (int)$order->id,
@@ -37,7 +33,6 @@ class OrderTransformer extends GeneralTransformer
             'status'      => $status,
             'number'      => $order->num,
             'main_image'  => $this->end_point.$order->products()->first()->image,
-            'main_image_phone'  =>  $this->end_point.$order->products()->first()->phone_image,
             'shipping_fees'   =>    $order->shipping_fees,
             'date'        => $order->created_at->format('M d, Y')
         ];

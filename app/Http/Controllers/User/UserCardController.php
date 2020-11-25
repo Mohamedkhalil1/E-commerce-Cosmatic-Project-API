@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\User\web;
+namespace App\Http\Controllers\User;
 
 use App\Card;
 use App\CardOfProduct;
-use App\Event;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
 use App\Product;
@@ -27,14 +26,15 @@ class UserCardController extends ApiController
     public function index(Request $request)
     {
         $user = auth()->user();
-        $card = $user->card;
-        if($card === null){
-            $card = new Card();
-            $card->user_id = $user->id;
-            $card->save();
+        $cart = $user->card;
+       
+        if($cart === null){
+            $cart = new Card();
+            $cart->user_id = $user->id;
+            $cart->save();
         }
-        $card->changed = 0;
-        $card->save();
+        $cart->changed = 0;
+        $cart->save();
 
         $cart = auth()->user()->card;
         $products = $cart->products()->get();
@@ -55,9 +55,9 @@ class UserCardController extends ApiController
         }
 
         if($request->language==='ar'){
-            return $this->showOne($card,Ar_CardTransformer::class);
+            return $this->showOne($cart,Ar_CardTransformer::class);
         }else{
-            return $this->showOne($card);
+            return $this->showOne($cart);
         }
        
     }
@@ -72,21 +72,21 @@ class UserCardController extends ApiController
     public function store(Request $request)
     {
         $user = auth()->user();
-        $card = $user->card;
-        if($card === null){
-            $card = new Card();
-            $card->user_id = $user->id;
-            $card->save();
+        $cart = $user->card;
+        if($cart === null){
+            $cart = new Card();
+            $cart->user_id = $user->id;
+            $cart->save();
         }
         $product = Product::findOrFail($request->product_id);
         if($product->stock < $request->quantity){
-            return $this->getMessage('out of stock',402);
+            return $this->getMessage(__('cart.out_of_stock'),402);
         }
-        $card = $this->add_product_card($request,$card);
+        $card = $this->add_product_card($request,$cart);
         if($card){
             return $this->showOne($card);
         }
-        return $this->getMessage('this product is limited you can only .',402);
+        return $this->getMessage(__('cart.not_found'),402);
     }
 
     /**
@@ -102,23 +102,20 @@ class UserCardController extends ApiController
         $product = Product::findOrFail($id);
         $cart->products()->detach($product->id);
         return $this->showOne($cart);
-        return $this->getMessage('item has been removed form cart',200);
+        return $this->getMessage(__('cart.product_removed'),200);
     }
     
-    protected function add_product_card($request,$card){
+    protected function add_product_card($request,$cart){
         try{
             DB::beginTransaction();
             $product = Product::findOrFail($request->product_id);
-            $card->products()->syncWithoutDetaching($product->id);
-            $card_details = CardOfProduct::where('product_id',$request->product_id)
-                ->where('card_id',$card->id)->first();
-            $card_details->quantity = $request->quantity;
-            if($card_details->save()){
-                DB::commit();
-                return $card;
-            }
-            DB::rollback();
-            return false;
+            $cart->products()->syncWithoutDetaching($product->id);
+            $cart_details = CardOfProduct::where('product_id',$request->product_id)
+                ->where('card_id',$cart->id)->first();
+            $cart_details->quantity = $request->quantity;
+            $cart_details->save();
+            DB::commit();
+            return $cart;
         }catch(Exception $ex){
               DB::rollback();
             return false;
@@ -133,26 +130,6 @@ class UserCardController extends ApiController
             $cart->save();
         }
         $cart->products()->detach();
-        return $this->getMessage('cart has been cleared',200);
+        return $this->getMessage(__('cart.clear'),200);
     }
-
-    
-    /*public function get_total($card){
-        $details = CardOfProduct::where('card_id',$card->id)->get();
-        $total =0 ;
-       
-        if(auth()->user()->is_family){
-            foreach($details as $product_details){
-                $product = Product::find($product_details->product_id);
-                $total += $product_details->quantity * $product->family_price;
-            }
-            return $total;
-        }else{
-            foreach($details as $product_details){
-                $product = Product::find($product_details->product_id);
-                $total += $product_details->quantity * $product->staff_price;
-            }
-            return $total;
-        }
-    }*/
 }

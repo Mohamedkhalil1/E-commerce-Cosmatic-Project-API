@@ -62,10 +62,10 @@ class CardTransformer extends TransformerAbstract
 
     private function get_shipping_fess(){
         $user= auth()->user();
-        if($user->userAddress === null){
+        if($user->city === null){
             $shipping = 50;
         }else{
-            $shipping = Shipping::where('city',auth()->user()->userAddress->region)->first();
+            $shipping = Shipping::where('city',auth()->user()->city)->first();
             if($shipping===null){
                 $shipping = 50;
             }else{

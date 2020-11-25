@@ -18,29 +18,17 @@ class UserTransformer extends TransformerAbstract
      */
     public function transform(User $user)
     {
-        $url = "http://trainingroiapp.com/trainingroiapp.com/khalil/public/img/";
-
-        if($user->userAddress === null){
-            return [
-                'id' => (int) $user->id,
-                'name' => (string) $user->name,
-                'email' => (string) $user->email,
-                'avatar' => (string)$user->avatar !== '' ? $url.$user->avatar : '',
-                'notification' => (int) $user->notification,
-                'phone'        =>  $user->phone,
-            ];
-        }else{
-           $shipping_address = $this->transformData($user->userAddress,UserAddressTransfor::class);
-            return [
-                'id' => (int) $user->id,
-                'name' => (string) $user->name,
-                'email' => (string) $user->email,
-                'avatar' => (string)$user->avatar !== '' ? $url.$user->avatar : '',
-                'shipping_address'  => $shipping_address,
-                'notification' => (int) $user->notification,
-                'phone'        =>  $user->phone,
-            ];
-        }
-        
+        return [
+            'id' => (int) $user->id,
+            'name' => (string) $user->name,
+            'email' => (string) $user->email,
+            'phone' =>  $user->phone,
+            'government' => (string) $user->government,
+            'city' => (string) $user->city,
+            'address' => (string) $user->address,
+            'avatar' => (string)$user->avatar,
+            'notification' => (int) $user->notification,
+           
+        ];
     }
 }

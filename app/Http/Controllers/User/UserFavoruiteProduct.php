@@ -1,13 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\User\web;
+namespace App\Http\Controllers\User;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
 use App\Product;
-use App\Transformers\Product\Ar\Ar_FamilyProductTransformer;
 use App\Transformers\Product\Ar\Ar_ProductTransformer;
-use App\Transformers\Product\FamilyProductTransformer;
 use App\Transformers\Product\ProductTransformer;
 use Exception;
 

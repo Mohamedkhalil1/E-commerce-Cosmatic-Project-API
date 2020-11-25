@@ -8,18 +8,7 @@ use App\Transformers\Product\ProductImageTransformer;
 
 class Ar_ProductTransformer extends GeneralTransformer
 {
-    protected $defaultIncludes = [
-        'images',
-    ];
-    /**
-     * List of resources possible to include
-     *
-     * @var array
-     */
-    protected $availableIncludes = [
-        'meta',
-    ];
-    
+
     /**
      * A Fractal transformer.
      *
@@ -43,18 +32,13 @@ class Ar_ProductTransformer extends GeneralTransformer
             'price'                           => $product->price,
             'stock'                           => (int)$product->stock,    
             'image'                           => $product->image ? $this->end_point.(string)$product->image : '',
-            'phone_image'                     => $product->phone_image ? $this->end_point.(string)$product->phone_image : '',
-            'discount'                        => $product->discount.'%',
             'price_discount'                  => $product->price_discount,   
             'is_favoruite'                    => (bool)$is_favoruite,
             'in_cart'                         => (bool)$in_cart,
             'brand_id'                        => (int)$product->brand_id,
-            'brand'                           => $product->brand ?  (string) $product->brand->title : '',
-            'url'                             => $product->url,
-            'company'                         => $product->company_name,
-            'category'                        => $product->categories()->first() === null ? null : $product->categories()->first()->title,
-            'color'                           => $product->color,
-            'size'                           => $product->size,
+            'brand'                           => (string)$product->brand->title,
+            'category'                        => $product->categories()->WhereNull('parent_id')->first()->title_ar,
+            'sub_category'                    => $product->categories()->WhereNotNull('parent_id')->first()->title_ar,
           ];
     }
 

@@ -51,38 +51,30 @@ Route::resource('brand.category', 'Brand\BrandCategoryController',['only' => ['u
 
 
 Route::resource('my_orders', 'Order\MyOrderController',['except'=>['create','edit']]);
-Route::resource('web/my_orders', 'Order\webOrdorerController',['only'=>['index']]);
 Route::resource('orders','Order\OrderController',['only' => ['index','show']]);
 
 
 /* user */
-Route::resource('users', 'User\web\UserController',['except'=>['create','edit']]);
-Route::post('users/excel', 'User\web\UserController@store_group');
 
-Route::resource('user/cart', 'User\web\UserCardController',['except' => ['create','edit','update']]);
-Route::post('user/cart/clear', 'User\web\UserCardController@clear_cart');
-Route::resource('user/favourite', 'User\web\UserFavoruiteProduct',['except' => ['create','edit','update']]);
-Route::post('user/favourite/clear', 'User\web\UserFavoruiteProduct@clear_favourite');
+Route::resource('user/cart', 'User\UserCardController',['except' => ['create','edit','update']]);
+Route::post('user/cart/clear', 'User\UserCardController@clear_cart');
+Route::resource('user/favourite', 'User\UserFavoruiteProduct',['except' => ['create','edit','update']]);
+Route::post('user/favourite/clear', 'User\UserFavoruiteProduct@clear_favourite');
 
-Route::post('user/profile/change-password','User\web\UserProfileController@change_password');
-Route::post('user/profile/update','User\web\UserProfileController@update_data');
+Route::post('user/profile/change-password','User\UserProfileController@change_password');
+Route::post('user/profile/update','User\UserProfileController@update_data');
 
-Route::resource('user/family', 'User\web\FamilyUserController',['only' => ['index','destroy']]);
-Route::resource('user/notification', 'User\Phone\UserNotificationController',['only' => ['store']]);
+Route::resource('user/family', 'User\FamilyUserController',['only' => ['index','destroy']]);
+Route::resource('user/notification', 'User\UserNotificationController',['only' => ['store']]);
 
 /* contact us */
-Route::resource('user/contact-us', 'User\web\UserContactUsController',['only' => ['store','index','show']]);
+Route::resource('user/contact-us', 'User\UserContactUsController',['only' => ['store','index','show']]);
 
 
-/* Password */
-Route::post('user/send_email' , 'User\web\UserForgetPasswordController@send_email');
-Route::post('user/new_password' , 'User\web\UserForgetPasswordController@new_password');
-Route::post('user/resend_email' , 'User\web\UserForgetPasswordController@resend_email');
-
-Route::post('phone/user/send_email' , 'User\Phone\UserForgetPasswordController@send_email');
-Route::post('phone/user/match_code' , 'User\Phone\UserForgetPasswordController@match_code');
-Route::post('phone/user/new_password' , 'User\Phone\UserForgetPasswordController@new_password');
-Route::post('phone/user/resend_email' , 'User\Phone\UserForgetPasswordController@resend_email');
+Route::post('phone/user/send_email' , 'User\UserForgetPasswordController@send_email');
+Route::post('phone/user/match_code' , 'User\UserForgetPasswordController@match_code');
+Route::post('phone/user/new_password' , 'User\UserForgetPasswordController@new_password');
+Route::post('phone/user/resend_email' , 'User\UserForgetPasswordController@resend_email');
 
 
 

@@ -12,21 +12,12 @@ class Ar_OrderTransformer extends GeneralTransformer
         'details',
     ];
 
-    /**
-     * A Fractal transformer.
-     *
-     * @return array
-     */
     public function transform(Order $order)
     {
         if((int)$order->done === 0){
-            $status = "processing";
-        }elseif((int)$order->done === 1){
-            $status = "done";
-        }elseif((int)$order->done === 2){
-            $status = "rejected";
-        }else{
             $status = "pending";
+        }elseif((int)$order->done === 1){
+            $status = "paid";
         }
         return [
             'id'          => (int)$order->id,
@@ -37,7 +28,6 @@ class Ar_OrderTransformer extends GeneralTransformer
             'number'      => $order->num,
             'main_image'  => $this->end_point.$order->products()->first()->image,
             'shipping_fees'   =>    $order->shipping_fees,
-            'main_image_phone'  => $this->end_point.$order->products()->first()->phone_image,
             'date'        => $order->created_at->format('M d, Y')
         ];
     }

@@ -42,12 +42,12 @@ trait ApiResponser{
             $collection = $this->paginate($collection);
             $collection = $this->cacheResponse($collection);
            // return $this->successResponse($collection, $code);
-        }elseif($transformer === AllOrderTransformer::class){
+        }else{
             $collection = $this->paginate($collection);
             $collection = $this->cacheResponse($collection);
         }
         $collection = $this->transformData($collection,$transformer);
-        //$collection = $this->cacheResponse($collection);
+       
         return $this->successResponse($collection, $code);
     }
 

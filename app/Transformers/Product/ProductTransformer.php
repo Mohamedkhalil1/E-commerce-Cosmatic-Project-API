@@ -7,9 +7,7 @@ use App\Transformers\GeneralTransformer;
 
 class ProductTransformer extends GeneralTransformer
 {
-    protected $defaultIncludes = [
-        'images',
-    ];
+    
     /**
      * List of resources possible to include
      *
@@ -33,8 +31,7 @@ class ProductTransformer extends GeneralTransformer
             $is_favoruite= $this->is_favoruite($product,$user);  
             $in_cart = $this->in_cart($product,$user);
         }
-       
-       // $product->categories()->WhereNotNull('parent_id')->first() === null ? : $product->categories()->WhereNotNull('parent_id')->first()->title,
+
        $category = ''; 
        if($product->categories()->WhereNotNull('parent_id')->first() === null ){
             if( $product->categories()->WhereNull('parent_id')->first() !== null){
@@ -51,33 +48,25 @@ class ProductTransformer extends GeneralTransformer
             'price'                           => $product->price,
             'stock'                           => (int)$product->stock,    
             'image'                           => $product->image ? $this->end_point.(string)$product->image : '',
-            'phone_image'                     => $product->phone_image ? $this->end_point.(string)$product->phone_image : '',
-            'discount'                        => $product->discount.'%',
             'price_discount'                  => $product->price_discount,   
             'is_favoruite'                    => (bool)$is_favoruite,
             'in_cart'                         => (bool)$in_cart,
-            'company'                         => $product->company_name,
             'brand_id'                        => (int)$product->brand_id,
-            'brand'                           => $product->brand ?  (string) $product->brand->title : '',
-            'url'                             => $product->url,
-            'category'                        => $category ,//$product->categories->first() === null ? '' : $product->categories->first()->title ,
-            'color'                           => $product->color,
-            'size'                           => $product->size,
+            'brand'                           => (string)$product->brand->title,
+            'category'                        => $product->categories()->WhereNull('parent_id')->first()->title,
+            'sub_category'                    => $product->categories()->WhereNotNull('parent_id')->first()->title ,
+          
           ];
     }
 
     public static function originAttribute ($index){
         $attrubites = [
             'id'                              => 'id',
-            'title'                           => 'title',
-            'description'                     => 'description',     
+            'title'                           => 'title',   
             'price'                           => 'price_discount',  
             'stock'                           => 'stock',  
-            'image'                           => 'image',  
-            'discond'                         => 'discond',  
             'brand'                           => 'brand_id',
             'ad'                              => 'ad_id',
-            'company'                         => 'company_name'
         ];
         return isset($attrubites[$index]) ? $attrubites[$index] : null ;
     }      
@@ -93,11 +82,4 @@ class ProductTransformer extends GeneralTransformer
         }
         return false;  
     }
-
-    public function includeImages(Product $product){
-        $images = $product->images()->get();
-        return $this->collection($images,new ProductImageTransformer);
-    }
-
-    
 }

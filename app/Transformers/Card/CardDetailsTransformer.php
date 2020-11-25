@@ -25,9 +25,7 @@ class CardDetailsTransformer extends GeneralTransformer
             'title'          => (string)$product->title,
             'stock'          => (int)$product->stock ,
             'image'          => $this->end_point.(string)$product->image,
-            'image'          => $this->end_point.(string)$product->phone_image,
             'quantity'       => (int)$details->quantity,
-            'brand'          => $product->brand ?  (string) $product->brand->title : '',
             'price'          => $product->price,
             'price_discount' => $product->price_discount,
             'amount'         => $product->price_discount * $details->quantity

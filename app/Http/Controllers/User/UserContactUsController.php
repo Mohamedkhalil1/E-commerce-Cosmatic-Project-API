@@ -1,14 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\User\web;
+namespace App\Http\Controllers\User;
 
 use App\ContactUs;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
-use App\Mail\ContactUs as MailContactUs;
-use App\Mail\ContactUsMail;
-use App\User;
-use Illuminate\Support\Facades\Mail;
 
 class UserContactUsController extends ApiController
 {

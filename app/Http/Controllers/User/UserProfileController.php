@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\User\web;
+namespace App\Http\Controllers\User;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
@@ -10,7 +10,6 @@ use App\UserAddress;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class UserProfileController extends ApiController
