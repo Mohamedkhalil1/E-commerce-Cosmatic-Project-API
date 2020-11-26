@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Outlet Egypt</title>
+        <title>Company</title>
 
         <!-- Fonts -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -12,7 +12,7 @@
     <body>
         <div class="jumbotron text-center">
             <h1 class="display-3">Thank You!</h1>
-            <p class="lead"><strong>Please cehcek your orders</strong></p>
+            <p class="lead"><strong>Please check your orders</strong></p>
             <hr>
             <p>
               Having trouble? <a href="">Contact us : +20106265989</a>
