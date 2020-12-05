@@ -20,6 +20,7 @@ class OrderTransformer extends GeneralTransformer
      */
     public function transform(Order $order)
     {
+        $status="";
         if((int)$order->done === 0){
             $status = "pending";
         }elseif((int)$order->done === 1){
