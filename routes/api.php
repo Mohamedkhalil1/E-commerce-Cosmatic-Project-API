@@ -43,7 +43,7 @@ Route::resource('brands', 'Brand\BrandController',['only'=>['show','index']]);
 
 
 /* Orders */
-Route::resource('my_orders', 'Order\MyOrderController',['only'=>['show','inex']]);
+Route::resource('my_orders', 'Order\MyOrderController',['only'=>['show','index']]);
 Route::post('my_orders/code', 'Order\MyOrderController@applyCode');
 
 
