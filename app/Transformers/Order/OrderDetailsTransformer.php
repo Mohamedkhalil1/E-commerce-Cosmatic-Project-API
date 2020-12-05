@@ -22,7 +22,7 @@ class OrderDetailsTransformer extends GeneralTransformer
             'id'               => (int) $order_details->id,
             'order_id'         => (int) $order_details->order_id,
             'product_id'       => $product->id ,
-            'product_title'    => $product->title_ar,
+            'product_title'    => $product->title,
             'product_image'    => $product->image ,
             'price'            => $order_details->price,
             'price_discount'   => $order_details->price_discount,
