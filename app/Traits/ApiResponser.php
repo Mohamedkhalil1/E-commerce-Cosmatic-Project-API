@@ -1,12 +1,9 @@
 <?php 
 
 namespace App\Traits;
-
-use App\Ad;
 use App\Brand;
 use App\Category;
 use App\Product;
-use App\Transformers\Order\Admin\AllOrderTransformer;
 use App\Transformers\Product\Ar\Ar_ProductTransformer;
 use App\Transformers\Product\ProductTransformer;
 use Illuminate\Database\Eloquent\Model;
@@ -41,18 +38,15 @@ trait ApiResponser{
             $collection = $this->search($collection,$lang);
             $collection = $this->paginate($collection);
             $collection = $this->cacheResponse($collection);
-           // return $this->successResponse($collection, $code);
         }else{
             $collection = $this->paginate($collection);
             $collection = $this->cacheResponse($collection);
         }
         $collection = $this->transformData($collection,$transformer);
-       
         return $this->successResponse($collection, $code);
     }
 
     public function showArray($array,$code=200){
-
         $data = array();
         if(!count($array)){
             return $this->successResponse(['data' => $array],$code);
@@ -66,8 +60,6 @@ trait ApiResponser{
     }
 
     protected function showOne(Model $instance ,$transformer='', $code=200){
-       $user = auth()->user();
-
        if($transformer === ''){
         $transformer = $instance->first()->transformer;
         }
@@ -98,10 +90,12 @@ trait ApiResponser{
                         $collection =  Product::whereNull('parent_id')->whereHas('categories', function($q) use($titles) {
                             $q->whereIn('title', $titles)->orWhereIn('title_ar',$titles);
                             })
+                            ->where('price_discount','>=',(int)$attributes[0])
+                            ->where('price_discount','<=',(int)$attributes[1])
                             ->get();
 
-                            $collection = $collection->where('price_discount','>=',(int)$attributes[0])
-                            ->where('price_discount','<=',(int)$attributes[1]);
+                        /*$collection = $collection->where('price_discount','>=',(int)$attributes[0])
+                        ->where('price_discount','<=',(int)$attributes[1]);*/
                     }
 
                 }else{
@@ -126,8 +120,7 @@ trait ApiResponser{
     }
 
     private function search($collection){
-       
-        
+
         if(request()->has('search')){
             $brands= Brand::where('title','LIKE','%'.request()->get('search').'%')->get();
             $brand_ids= array();
@@ -161,12 +154,9 @@ trait ApiResponser{
                ->where(function($q) use($ids)
                {
                    $q->where('categories.id',$ids);
-                  // $query->where('eav_produit.value_int','=','3');
-                   //$query->where('eavs.id', '=', '3');
                })->get();
             }
         }
-       // dd($collection);
         return $collection;
     }
 
@@ -177,7 +167,6 @@ trait ApiResponser{
             if(count($attributes) === 2){
                 if((int)$attributes[1] === 1){
                     $attribute = $transformer::originAttribute($attributes[0]);
-                   // dd($attribute);
                     $collection = $collection->sortByDesc->{$attribute};
                 }else{
                     $attribute = $transformer::originAttribute($attributes[0]);
@@ -250,10 +239,6 @@ trait ApiResponser{
     {
         return $this->getMessage($validator->errors()->first(),404);
     }
-
-
 }
-
-
 
 ?>
