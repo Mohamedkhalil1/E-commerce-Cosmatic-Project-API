@@ -20,12 +20,6 @@ class OrderTransformer extends GeneralTransformer
      */
     public function transform(Order $order)
     {
-        $status="";
-        if((int)$order->done === 0){
-            $status = "pending";
-        }elseif((int)$order->done === 1){
-            $status = "paid";
-        }
         return [
             'id'          => (int)$order->id,
             'invoice_num' => $order->invoice_num,
