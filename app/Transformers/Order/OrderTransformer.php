@@ -31,7 +31,7 @@ class OrderTransformer extends GeneralTransformer
             'invoice_num' => $order->invoice_num,
             'amount'      => (float) $order->amount,
             'customer'    => (string) $order->user ? $order->user->name : '',
-            'status'      => $status,
+            'status'      => $order->done,
             'number'      => $order->num,
             'main_image'  => $this->end_point.$order->products()->first()->image,
             'shipping_fees'   =>    $order->shipping_fees,
